@@ -4,6 +4,8 @@
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
+require_once '../model/UserModel.php';
+
 class UserController
 {
 
@@ -14,18 +16,15 @@ class UserController
     }
 
 
-    public function registerUser(Request $request, Response $response, $args)
+    public function registerUser(Request $request)
     {
         $data = $request->getParsedBody();
 
+        if(isset($data['name']) && isset($data['email']) && isset($data['password'])) {
 
-        if(isset($data->user ) && !empty($data->user) && isset($data->user->name)
-                    && isset($data->user->email) && isset($data->user->password)) {
-
-            $user = $data -> user;
-            $name = $user -> name;
-            $email = $user -> email;
-            $password = $user -> password;
+            $name = $data['name'];
+            $email = $data['email'];
+            $password = $data['password'];
 
             if ($this->model->isEmailValid($email)) {
 

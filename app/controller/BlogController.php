@@ -15,15 +15,15 @@ class BlogController
 
     public function getBlogAll()
     {
-        echo "blog all";
+        echo json_encode($this->model->selectBlogAll());
     }
 
 
     public function getBlogId(Request $request, $args)
     {
-        $name = $request->getAttribute('item');
+        $id = $request->getAttribute('item');
 
-        print_r($name);
+        echo json_encode($this->model->selectBlogId($id));
     }
 
 }

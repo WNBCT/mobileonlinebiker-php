@@ -38,4 +38,10 @@ $app->get('/tags', function (){
 });
 
 
+// test
+$app->post('/test', function (Request $request) {
+    print_r($request->getParsedBody());
+});
+
+
 $app->run();
