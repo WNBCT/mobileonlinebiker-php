@@ -6,18 +6,9 @@ class BlogModel
 {
     private $conn;
 
-    private $user;
-    private $blogTags;
-    private $symbol;
-
-
     public function __construct() {
         $this->conn = new DB_PDO();
-        $this->blogTags = new BlogTagsModel();
-        $this->user = new UserModel();
-        $this->symbol = new SymbolBlogModel();
     }
-
 
 
     public function selectBlogAll()

@@ -34,7 +34,14 @@ $app->put('/blog/update/{blog_id}', 'BlogController:updateBlog');
 $app->put('/blog/symbol/update/{blog_id}', 'BlogController:updateSymbol');
 $app->delete('/blog/delete/{blog_id}', 'BlogController:deleteBlog');
 
-
+// forum
+$app->get('/forum/all', '\ForumController:readListForum');
+$app->get('/forum/get/{forum_id}', '\ForumController:getForumId');
+$app->post('/forum/create', '\ForumController:createForum');
+$app->post('/forum/symbol/create', '\ForumController:createSymbol');
+$app->put('/forum/update/{forum_id}', '\ForumController:updateForumId');
+$app->put('/forum/symbol/{forum_id}', '\ForumController:updateSymbolId');
+$app->delete('/forum/delete/{forum_id}', '\ForumController:deleteForum');
 
 
 
