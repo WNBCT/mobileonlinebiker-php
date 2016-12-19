@@ -27,20 +27,31 @@ $app->post('/user/login', '\UserController:loginUser');
 $app->post('/user/chgPass', '\UserController:chgPass');
 
 // blog
-$app->get('/blog-all', '\BlogController:getBlogAll');
-$app->get('/blog/{item}', '\BlogController:getBlogId');
+$app->get('/blog/all', '\BlogController:getBlogAll');
+$app->get('/blog/get/{item}', '\BlogController:getBlogId');
+$app->post('/blog/insert', 'BlogController:postInsertBlog');
+$app->put('/blog/update/{blog_id}', 'BlogController:updateBlog');
+$app->put('/blog/symbol/update/{blog_id}', 'BlogController:updateSymbol');
+$app->delete('/blog/delete/{blog_id}', 'BlogController:deleteBlog');
+
+
+
+
 
 
 // tags
 $app->get('/tags', function (){
-    $t = new BlogModel();
-    echo json_encode($t->selectBlogId("1001"));
+    $arr = array('star', 'heart', 'smile', 'like');
+    $test = array_keys($arr, 'star');
+    print_r($test);
+    echo $test ? 'true' : 'false';
 });
 
-
 // test
-$app->post('/test', function (Request $request) {
-    print_r($request->getParsedBody());
+$app->put('/test/{id}', function (Request $request, Response $response, $args) {
+    $data = $request->getParsedBody();
+    print_r($data);
+    print_r($args);
 });
 
 

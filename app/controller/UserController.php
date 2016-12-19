@@ -4,7 +4,6 @@
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
-require_once '../model/UserModel.php';
 
 class UserController
 {
@@ -27,7 +26,6 @@ class UserController
             $password = $data['password'];
 
             if ($this->model->isEmailValid($email)) {
-
                 echo $this->model->register($name, $email, $password);
             } else {
                 echo $this->model->getMsgInvalidEmail();
@@ -40,16 +38,14 @@ class UserController
     }
 
 
-    public function loginUser(Request $request, Response $response, $args)
+    public function loginUser(Request $request)
     {
         $data = $request->getParsedBody();
 
-        if(isset($data -> user ) && !empty($data -> user) && isset($data -> user -> email) && isset($data -> user -> password)){
+        if(isset($data['email']) && isset($data['password'])){
 
-            $user = $data -> user;
-            $email = $user -> email;
-            $password = $user -> password;
-
+            $email = $data['email'];
+            $password = $data['password'];
 
             echo $this->model->loginUser($email, $password);
 
@@ -61,24 +57,21 @@ class UserController
     }
 
 
-    public function chgPass(Request $request, Response $response, $args)
+    public function chgPass(Request $request)
     {
         $data = $request->getParsedBody();
 
-        if(isset($data -> user ) && !empty($data -> user) && isset($data -> user -> email) && isset($data -> user -> old_password)
-            && isset($data -> user -> new_password)){
+        if(isset($data['email']) && isset($data['old_password']) && isset($data['new_password'])){
 
-            $user = $data -> user;
-            $email = $user -> email;
-            $old_password = $user -> old_password;
-            $new_password = $user -> new_password;
+            $email = $data['email'];
+            $old_password = $data['old_password'];
+            $new_password = $data['new_password'];
 
             echo $this->model->changePassword($email, $old_password, $new_password);
 
         } else {
 
             echo $this->model->getMsgInvalidParam();
-
         }
     }
 

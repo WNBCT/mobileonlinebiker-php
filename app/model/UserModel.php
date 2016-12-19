@@ -33,7 +33,9 @@ class UserModel
 
     public function register($name, $email, $password)
     {
+
         if (!empty($name) && !empty($email) && !empty($password)) {
+
 
             if ($this->checkUserExist($email)) {
 
@@ -43,9 +45,7 @@ class UserModel
 
             } else {
 
-                $result = $this->insertData($name, $email, $password);
-
-                if ($result) {
+                if ($this->insertData($name, $email, $password)) {
 
                     $response["result"] = "success";
                     $response["message"] = "User Registered Successfully !";
@@ -71,8 +71,7 @@ class UserModel
 
             if ($this->checkUserExist($email)) {
 
-                $result =  $this->checkLogin($email, $password);
-
+                $result = $this->checkLogin($email, $password);
 
                 if(!$result) {
 
@@ -116,18 +115,14 @@ class UserModel
                 return json_encode($response);
 
             } else {
-
-
                 $result = $this->changePasswordPrivate($email, $new_password);
 
                 if($result) {
-
                     $response["result"] = "success";
                     $response["message"] = "Password Changed Successfully";
                     return json_encode($response);
 
                 } else {
-
                     $response["result"] = "failure";
                     $response["message"] = 'Error Updating Password';
                     return json_encode($response);
@@ -151,12 +146,15 @@ class UserModel
         $encrypted_password = $hash["encrypted"];
         $salt = $hash["salt"];
 
-        $sql = 'INSERT INTO users SET unique_id =:unique_id, name =:name,
-    email =:email,encrypted_password =:encrypted_password,salt =:salt,created_at = NOW()';
+        $sql = 'INSERT INTO users SET unique_id=:unique_id, name=:name, email=:email, encrypted_password=:encrypted_password, salt=:salt, created_at = NOW()';
 
         $query = $this->conn->prepare($sql);
-        $query->execute(array('unique_id' => $unique_id, ':name' => $name, ':email' => $email,
-            ':encrypted_password' => $encrypted_password, ':salt' => $salt));
+        $query->bindValue(':unique_id', $unique_id);
+        $query->bindValue(':name', $name);
+        $query->bindValue(':email', $email);
+        $query->bindValue(':encrypted_password', $encrypted_password);
+        $query->bindValue(':salt', $salt);
+        $query->execute();
 
         return $query;
     }
@@ -164,23 +162,22 @@ class UserModel
 
     public function checkLogin($email, $password) {
 
-        $sql = 'SELECT * FROM users WHERE email = :email';
-        $query = $this -> conn -> prepare($sql);
-        $query -> execute(array(':email' => $email));
-        $data = $query -> fetchObject();
-        $salt = $data -> salt;
-        $db_encrypted_password = $data -> encrypted_password;
+        $sql = 'SELECT * FROM users WHERE email=:email';
+        $query = $this->conn->prepare($sql);
+        $query->bindValue(':email', $email);
+        $query->execute();
 
-        if ($this -> verifyHash($password.$salt,$db_encrypted_password) ) {
+        $data = $query->fetchObject();
+        $salt = $data->salt;
+        $db_encrypted_password = $data->encrypted_password;
 
-
-            $user["name"] = $data -> name;
-            $user["email"] = $data -> email;
-            $user["unique_id"] = $data -> unique_id;
+        if ($this->verifyHash($password.$salt,$db_encrypted_password) ) {
+            $user["name"] = $data->name;
+            $user["email"] = $data->email;
+            $user["unique_id"] = $data->unique_id;
             return $user;
 
         } else {
-
             return false;
         }
 
@@ -189,53 +186,40 @@ class UserModel
 
     private function changePasswordPrivate($email, $password){
 
-
         $hash = $this -> getHash($password);
         $encrypted_password = $hash["encrypted"];
         $salt = $hash["salt"];
 
-        $sql = 'UPDATE users SET encrypted_password = :encrypted_password, salt = :salt WHERE email = :email';
-        $query = $this -> conn -> prepare($sql);
-        $query -> execute(array(':email' => $email, ':encrypted_password' => $encrypted_password, ':salt' => $salt));
+        $sql = 'UPDATE users SET encrypted_password=:encrypted_password, salt=:salt WHERE email=:email';
+        $query = $this->conn->prepare($sql);
+        $query->bindValue(':encrypted_password', $encrypted_password);
+        $query->bindValue(':salt', $salt);
+        $query->bindValue(':email', $email);
 
-        if ($query) {
-
-            return true;
-
-        } else {
-
-            return false;
-
-        }
+        return $query->execute();
 
     }
 
     public function checkUserExist($email){
 
-        $sql = 'SELECT COUNT(*) from users WHERE email =:email';
-        $query = $this -> conn -> prepare($sql);
-        $query -> execute(array('email' => $email));
+        $sql = 'SELECT COUNT(*) from users WHERE email=:email';
+        $query = $this->conn->prepare($sql);
+        $query->bindValue(':email', $email);
+        $query->execute();
 
         if($query){
-
             $row_count = $query -> fetchColumn();
 
             if ($row_count == 0){
 
                 return false;
-
             } else {
-
                 return true;
-
             }
         } else {
-
             return false;
         }
     }
-
-
 
 
 
