@@ -27,15 +27,18 @@ class BlogController
                 array_push($output, array(
                     "blog_id"       => $value['blog_id'],
                     "title"         => $value['blog_title'],
+                    "desc"         => $value['blog_description'],
                     "public_date"   => $value['blog_public'],
+                    "image"         => $value['blog_image'],
                     "tags"          => $blogTags->getTagsBlogId($value['blog_id']),
                     "user"          => $user->getNameUserId($value['user_id']),
-                    "symbol"        => $symbol->getSymbol($value['blog_id'], $value['user_id'])
+                    "symbol"        => "" . $symbol->getSymbol($value['blog_id'], $value['user_id'])
                 ));
             }
         }
 
-        echo json_encode(array('count'=>$result['count'], 'blog'=>$output));
+//        echo json_encode(array('count'=>$result['count'], 'blog'=>$output));
+        echo json_encode($output);
     }
 
 
@@ -73,6 +76,8 @@ class BlogController
         $blogTag = new BlogTagsModel();
         $symbol = new SymbolBlogModel();
 
+
+
         $data = [
             'title' => $d['title'],
             'desc'  => $d['desc'],
@@ -80,21 +85,28 @@ class BlogController
             'user_id' => $d['user_id']
         ];
 
+
         // insert blog
         if ($this->model->insert($data)) {
             $blog_id = $this->model->getIdLatest();
 
-            // insert blog tags
-            $blogTag->insertBlogAndTag($blog_id, $d['tags_id']);
+            if (isset($d['tags']) && count($d['tags']) > 0) {
+                // insert blog tags
+                foreach ($d['tags'] as $tag) {
+                    $blogTag->insertBlogAndTag($blog_id, $tag);
+                }
+            }
 
             // insert symbol
-            $symbol->insert($blog_id, $d['tags_id']);
+            $symbol->insert($blog_id, $d['user_id']);
 
-            return true;
+            $output["message"] = "Insert Blog (" . $blog_id . ") :: completed";
+            $output["result"] = "success";
         } else {
-            return false;
+            $output["message"] = "Insert Blog :: failed";
+            $output["result"] = "error";
         }
-
+        echo json_encode($output);
     }
 
     public function updateBlog(Request $request, Response $response, $args)

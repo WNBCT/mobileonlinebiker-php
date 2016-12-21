@@ -13,7 +13,7 @@ class BlogModel
 
     public function selectBlogAll()
     {
-        $sql = "SELECT * FROM blog ";
+        $sql = "SELECT * FROM blog ORDER BY blog_id DESC ";
 
         // prepare sql
         $stmt = $this->conn->prepare($sql);

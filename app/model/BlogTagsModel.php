@@ -12,17 +12,22 @@ class BlogTagsModel
 
     public function getTagsBlogId($blog_id)
     {
-        $sql = "SELECT blog_tag.tag_id, tags.tag_name FROM blog_tag
+        $sql = "SELECT blog_tag.tag_id, tags.tag_name AS name FROM blog_tag
                 LEFT JOIN tags ON blog_tag.tag_id = tags.tag_id WHERE blog_id=:id";
         $stmt = $this->conn->prepare($sql);
         $stmt->bindValue(":id", $blog_id);
         $stmt->execute();
 
+        $data = array();
+
         if ($stmt->rowCount() > 0) {
+//            array_push($data, [
+//
+//            ]);
             return $stmt->fetchAll();
         }
-//        return [array("tag_id" => "null", "tag_name" => "null")];
-        return 'null';
+        return [array("tag_id" => "null", "tag_name" => "null")];
+//        return 'null';
     }
 
 

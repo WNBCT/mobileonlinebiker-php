@@ -19,21 +19,24 @@ class ForumController
 
             $usrArr = array();
             $usr = $user->getUserId($value['user_id']);
-            $usrArr['user_id'] = $usr['user_id'];
-            $usrArr['name'] = $usr['name'];
+//            $usrArr['user_id'] = $usr['user_id'];
+//            $usrArr['name'] = $usr['name'];
 
             array_push($output, array(
                 'forum_id' => $value['forum_id'],
-                'title' => $value['forum_title'],
-                'details' => $value['forum_details'],
+                'forum_title' => $value['forum_title'],
+                'forum_details' => $value['forum_details'],
                 'image' => $value['image'],
                 'count_comment' => $value['count_comment'],
-                'user' => $usrArr,
+                'name' => $usr['name'],
+                'created_at' => $value['created_at'],
             ));
 
         }
 
-        echo json_encode(['count' => $count, 'lists' => $output]);
+//        echo json_encode(['count' => $count, 'lists' => $output]);
+        echo json_encode(['count' => $count, 'feed' => $output]);
+//        echo json_encode($output);
     }
 
 
@@ -131,7 +134,7 @@ class ForumController
             echo Message::setError("Update Symbol Forum");
         }
     }
-    
+
     // delete forum id and delete symbol forum
     public function deleteForum(Request $request, Response $response, $args)
     {

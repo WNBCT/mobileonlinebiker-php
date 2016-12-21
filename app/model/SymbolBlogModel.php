@@ -37,7 +37,7 @@ class SymbolBlogModel
 
             return $stmt->execute();
         } catch (PDOException $exception) {
-            echo "ERROR (update) :: " . $exception->getMessage();
+//            echo "ERROR (update) :: " . $exception->getMessage();
             return false;
         }
     }

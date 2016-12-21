@@ -28,7 +28,7 @@ class UserModel
         $stmt->bindValue(":id", $user_id);
         $stmt->execute();
 
-        return $stmt->fetch();
+        return $stmt->fetch()['name'];
     }
 
     public function register($name, $email, $password)
@@ -172,6 +172,7 @@ class UserModel
         $db_encrypted_password = $data->encrypted_password;
 
         if ($this->verifyHash($password.$salt,$db_encrypted_password) ) {
+            $user["user_id"] = $data->user_id;
             $user["name"] = $data->name;
             $user["email"] = $data->email;
             $user["unique_id"] = $data->unique_id;
